@@ -1,4 +1,6 @@
-from django.urls import path, include
+from django.urls import path
+
+from core.views import home_page, about_page, most_sampled
 
 app_name = ''
 

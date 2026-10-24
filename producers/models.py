@@ -1,5 +1,5 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator, MaxLengthValidator
+from django.core.validators import MinLengthValidator
 from django.db import models
 from core.validators import validate_year
 
@@ -38,11 +38,7 @@ class Producer(models.Model):
     region = models.CharField(
         choices=RegionChoices.choices,
         max_length=2,
-        validators=[
-            MinLengthValidator(2),
-        ],
         blank=True,
-        null=True,
     )
     active_since = models.IntegerField(
         validators=[
@@ -51,7 +47,6 @@ class Producer(models.Model):
     )
     bio = models.TextField(
         blank=True,
-        null=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

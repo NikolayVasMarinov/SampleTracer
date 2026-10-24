@@ -1,6 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.text import slugify
 
 from core.validators import validate_year
@@ -80,7 +81,8 @@ class Track(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["title", "performer"],
+                Lower('title'),
+                Lower('performer'),
                 name="unique_track_per_performer",
                 violation_error_message="A track with this title and performer already exists.",
             ),

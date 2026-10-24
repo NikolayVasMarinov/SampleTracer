@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.functions import Lower
 from django.utils.text import slugify
 
 from core.validators import validate_year
@@ -67,7 +68,8 @@ class SourceRecord(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=['title', 'original_artist'],
+                Lower('title'),
+                Lower('original_artist'),
                 name='unique_title_per_original_artist',
                 violation_error_message="A record with this title and original artist already exists.",
             ),
