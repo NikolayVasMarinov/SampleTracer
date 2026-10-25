@@ -1,4 +1,5 @@
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models.functions import Lower
 from django.utils.text import slugify
@@ -8,6 +9,8 @@ from core.validators import validate_year
 
 # Create your models here.
 class SourceRecord(models.Model):
+    MAX_RECORD_LENGTH = 20 * 60
+
     class GenreChoices(models.TextChoices):
         SOUL = "soul", "Soul"
         JAZZ = "jazz", "Jazz"
@@ -42,6 +45,16 @@ class SourceRecord(models.Model):
         choices=GenreChoices.choices,
         default=GenreChoices.OTHER,
     )
+    length = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(MAX_RECORD_LENGTH),
+        ],
+        error_messages={
+            "min_value": "Record must be at least 1 second long.",
+            "max_value": f"Record cannot exceed {MAX_RECORD_LENGTH // 60} minutes in length.",
+        },
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -74,3 +87,4 @@ class SourceRecord(models.Model):
                 violation_error_message="A record with this title and original artist already exists.",
             ),
         ]
+        ordering = ["release_year", "title", "pk"]

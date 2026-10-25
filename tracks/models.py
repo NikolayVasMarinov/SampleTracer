@@ -9,6 +9,8 @@ from core.validators import validate_year
 
 # Create your models here.
 class Track(models.Model):
+    MAX_TRACK_LENGTH = 20 * 60
+
     class StyleChoices(models.TextChoices):
         BOOM_BAP = "boom_bap", "Boom Bap"
         TRAP = "trap", "Trap"
@@ -19,6 +21,32 @@ class Track(models.Model):
         CLOUD_RAP = "cloud_rap", "Cloud Rap"
         ALTERNATIVE = "alternative", "Alternative"
         OTHER = "other", "Other"
+
+    class MusicalKeyChoices(models.TextChoices):
+        C_MINOR = "C_MIN", "C Minor"
+        CS_MINOR = "CS_MIN", "C# Minor / Db Minor"
+        D_MINOR = "D_MIN", "D Minor"
+        DS_MINOR = "DS_MIN", "D# Minor / Eb Minor"
+        F_MINOR = "F_MIN", "F Minor"
+        FS_MINOR = "FS_MIN", "F# Minor / Gb Minor"
+        A_MINOR = "A_MIN", "A Minor"
+        E_MINOR = "E_MIN", "E Minor"
+        G_MINOR = "G_MIN", "G Minor"
+        GS_MINOR = "GS_MIN", "G# Minor / Ab Minor"
+        B_MINOR = "B_MIN", "B Minor"
+        AS_MINOR = "AS_MIN", "A# Minor / Bb Minor"
+        C_MAJOR = "C_MAJ", "C Major"
+        CS_MAJOR = "CS_MAJ", "C# Major / Db Major"
+        D_MAJOR = "D_MAJ", "D Major"
+        DS_MAJOR = "DS_MAJ", "D# Major / Eb Major"
+        E_MAJOR = "E_MAJ", "E Major"
+        F_MAJOR = "F_MAJ", "F Major"
+        FS_MAJOR = "FS_MAJ", "F# Major / Gb Major"
+        G_MAJOR = "G_MAJ", "G Major"
+        GS_MAJOR = "GS_MAJ", "G# Major / Ab Major"
+        A_MAJOR = "A_MAJ", "A Major"
+        AS_MAJOR = "AS_MAJ", "A# Major / Bb Major"
+        B_MAJOR = "B_MAJ", "B Major"
 
     title = models.CharField(
         max_length=50,
@@ -40,11 +68,30 @@ class Track(models.Model):
             MinValueValidator(40),
             MaxValueValidator(225),
         ],
+        error_messages={
+            "min_value": "BPM must be in a sensible range.",
+            "max_value": "BPM must be in a sensible range.",
+        },
     )
     style = models.CharField(
         max_length=20,
         choices=StyleChoices.choices,
         default=StyleChoices.OTHER,
+    )
+    length = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(MAX_TRACK_LENGTH),
+        ],
+        error_messages={
+            "min_value": "Track must be at least 1 second long.",
+            "max_value": f"Track cannot exceed {MAX_TRACK_LENGTH // 60} minutes in length.",
+        },
+    )
+    musical_key = models.CharField(
+        max_length=10,
+        choices=MusicalKeyChoices.choices,
+        blank=True,
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,6 +115,16 @@ class Track(models.Model):
         editable=False,
     )
 
+    @property
+    def sample_count(self) -> int:
+        return self.samples.count()
+
+    @property
+    def musical_key_root(self) -> str:
+        """Return the root note of the musical key."""
+        return self.musical_key.split("_")[0].replace("S", "#")
+
+
     def save(self, *args, **kwargs):
         self.slug = slugify(f"{self.title}-{self.performer}")
         super().save(*args, **kwargs)
@@ -87,6 +144,7 @@ class Track(models.Model):
                 violation_error_message="A track with this title and performer already exists.",
             ),
         ]
+        ordering = ["release_year", "title", "pk"]
 
     def __str__(self) -> str:
         return f"{self.title} by {self.performer}"

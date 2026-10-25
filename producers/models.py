@@ -23,16 +23,10 @@ class Producer(models.Model):
     name = models.CharField(
         max_length=40,
         unique=True,
-        validators=[
-            MinLengthValidator(2),
-        ],
     )
     country = models.CharField(
         choices=CountryChoices.choices,
         max_length=2,
-        validators=[
-            MinLengthValidator(2),
-        ],
         default=CountryChoices.OTHER,
     )
     region = models.CharField(
@@ -59,4 +53,7 @@ class Producer(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    class Meta:
+        ordering = ["name"]
 
