@@ -4,13 +4,12 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.text import slugify
 
+from core.constants import MAX_LENGTH_SECONDS
 from core.validators import validate_year
 
 
 # Create your models here.
 class SourceRecord(models.Model):
-    MAX_RECORD_LENGTH = 20 * 60
-
     class GenreChoices(models.TextChoices):
         SOUL = "soul", "Soul"
         JAZZ = "jazz", "Jazz"
@@ -48,11 +47,11 @@ class SourceRecord(models.Model):
     length = models.IntegerField(
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(MAX_RECORD_LENGTH),
+            MaxValueValidator(MAX_LENGTH_SECONDS),
         ],
         error_messages={
             "min_value": "Record must be at least 1 second long.",
-            "max_value": f"Record cannot exceed {MAX_RECORD_LENGTH // 60} minutes in length.",
+            "max_value": f"Record cannot exceed {MAX_LENGTH_SECONDS // 60} minutes in length.",
         },
     )
 

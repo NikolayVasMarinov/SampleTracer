@@ -4,13 +4,12 @@ from django.db import models
 from django.db.models.functions import Lower
 from django.utils.text import slugify
 
+from core.constants import MAX_LENGTH_SECONDS
 from core.validators import validate_year
 
 
 # Create your models here.
 class Track(models.Model):
-    MAX_TRACK_LENGTH = 20 * 60
-
     class StyleChoices(models.TextChoices):
         BOOM_BAP = "boom_bap", "Boom Bap"
         TRAP = "trap", "Trap"
@@ -81,11 +80,11 @@ class Track(models.Model):
     length = models.IntegerField(
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(MAX_TRACK_LENGTH),
+            MaxValueValidator(MAX_LENGTH_SECONDS),
         ],
         error_messages={
             "min_value": "Track must be at least 1 second long.",
-            "max_value": f"Track cannot exceed {MAX_TRACK_LENGTH // 60} minutes in length.",
+            "max_value": f"Track cannot exceed {MAX_LENGTH_SECONDS // 60} minutes in length.",
         },
     )
     musical_key = models.CharField(
