@@ -20,9 +20,6 @@ class TrackForm(forms.ModelForm):
 
     class Meta:
         model = Track
-        # fields = ["title","performer", "release_year",
-        #           "release_date", "length", "bpm",
-        #           "style", "musical_key", "producer", "samples"]
         exclude = ["slug", "created_at", "updated_at"]
         widgets = {
             "release_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
@@ -41,7 +38,7 @@ class TrackForm(forms.ModelForm):
         help_texts = {
             "release_year": "The year the track was released",
             "release_date": "The full date the track was released",
-            "samples": "Select all samples used in the track (hold Ctrl to select multiple)",
+            "samples": "Select all samples used in the track (hold Ctrl or Cmd to select multiple)",
             "performer": "In case of multiple performers, separate names with commas",
             "musical_key": "Leave empty if unknown",
         }
