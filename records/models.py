@@ -74,6 +74,22 @@ class SourceRecord(models.Model):
             if self.release_year != self.release_date.year:
                 raise ValidationError("Release year must match the release date.")
 
+        candidate_slug = slugify(f"{self.title}-{self.original_artist}")
+
+        if candidate_slug:
+            duplicates = SourceRecord.objects.filter(slug=candidate_slug)
+
+            if self.pk:
+                duplicates = duplicates.exclude(pk=self.pk)
+
+            if duplicates.exists():
+                raise ValidationError({
+                    "title": (
+                        "These title and artist details produce a URL "
+                        "that is already in use. Please adjust the title or performer."
+                    )
+                })
+
     def __str__(self) -> str:
         return f"{self.title} by {self.original_artist}"
 

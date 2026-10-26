@@ -1,6 +1,9 @@
 from django import forms
 
 from core.utils import parse_length, format_length
+from core.validators import validate_year
+from producers.models import Producer
+from records.models import SourceRecord
 from .models import Track
 from datetime import datetime
 
@@ -111,3 +114,127 @@ class TrackEditForm(TrackForm):
         self.fields["producer"].disabled = True
         if self.instance.pk:
             self.initial["length"] = format_length(self.instance.length)
+
+class TrackFilterForm(forms.Form):
+    title = forms.CharField(
+        required=False,
+        max_length=50,
+        label="Track title",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search track title"}
+        ),
+        error_messages={
+            "max_length": "Track title must not exceed 50 characters.",
+        },
+    )
+
+    performer = forms.CharField(
+        required=False,
+        max_length=50,
+        label="Performer",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search performer"}
+        ),
+        error_messages={
+            "max_length": "Performer name must not exceed 50 characters.",
+        },
+    )
+
+    style = forms.ChoiceField(
+        required=False,
+        label="Style",
+        choices=[("", "All styles")] + list(Track.StyleChoices.choices),
+        error_messages={
+            "invalid_choice": "Select a valid track style.",
+        },
+    )
+
+    release_year_from = forms.IntegerField(
+        required=False,
+        label="Released from",
+        validators=[validate_year],
+        widget=forms.NumberInput(
+            attrs={
+                "placeholder": "e.g. 1999",
+                "min": 1900,
+                "max": datetime.now().year,
+            }
+        ),
+        help_text="Earliest release year.",
+        error_messages={
+            "invalid": "Enter a valid whole-number starting year.",
+        },
+    )
+
+    release_year_to = forms.IntegerField(
+        required=False,
+        label="Released to",
+        validators=[validate_year],
+        widget=forms.NumberInput(
+            attrs={
+                "placeholder": "e.g. 2020",
+                "min": 1900,
+                "max": datetime.now().year,
+            }
+        ),
+        help_text="Latest release year.",
+        error_messages={
+            "invalid": "Enter a valid whole-number ending year.",
+        },
+    )
+
+    producer = forms.ModelChoiceField(
+        required=False,
+        label="Producer",
+        queryset=Producer.objects.all(),
+        empty_label="All producers",
+        error_messages={
+            "invalid_choice": "Select a valid producer.",
+        },
+    )
+
+    sampled_record = forms.ModelChoiceField(
+        required=False,
+        label="Sampled record",
+        queryset=SourceRecord.objects.all(),
+        empty_label="Any record",
+        error_messages={
+            "invalid_choice": "Select a valid sampled record.",
+        },
+    )
+
+    sort = forms.ChoiceField(
+        required=False,
+        label="Sort by",
+        choices=[
+            ("", "Default order"),
+            ("newest", "Newest first"),
+            ("oldest", "Oldest first"),
+            ("title", "Title A–Z"),
+            ("bpm_low", "BPM, low to high"),
+            ("bpm_high", "BPM, high to low"),
+            ("longest", "Longest first"),
+            ("shortest", "Shortest first"),
+        ],
+        error_messages={
+            "invalid_choice": "Select a valid sorting option.",
+        },
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        year_from = cleaned_data.get("release_year_from")
+        year_to = cleaned_data.get("release_year_to")
+
+        if (
+            year_from is not None
+            and year_to is not None
+            and year_from > year_to
+        ):
+            self.add_error(
+                "release_year_to",
+                "The ending year must be greater than or equal to the starting year.",
+            )
+
+        return cleaned_data

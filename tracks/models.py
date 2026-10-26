@@ -134,6 +134,22 @@ class Track(models.Model):
             if self.release_year != self.release_date.year:
                 raise ValidationError("Release year must match the release date.")
 
+        candidate_slug = slugify(f"{self.title}-{self.performer}")
+
+        if candidate_slug:
+            duplicates = Track.objects.filter(slug=candidate_slug)
+
+            if self.pk:
+                duplicates = duplicates.exclude(pk=self.pk)
+
+            if duplicates.exists():
+                raise ValidationError({
+                    "title": (
+                        "These title and performer details produce a URL "
+                        "that is already in use. Please adjust the title or performer."
+                    )
+                })
+
     class Meta:
         constraints = [
             models.UniqueConstraint(
