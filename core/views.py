@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from producers.models import Producer
@@ -11,7 +12,7 @@ def home_page(request: HttpRequest) -> HttpResponse:
     record_count = SourceRecord.objects.count()
     producer_count = Producer.objects.count()
 
-    latest_tracks = tracks.order_by("-created_at", "-pk")[:5]
+    latest_tracks = tracks.order_by("-created_at", "-pk")[:10]
 
     context = {
         "track_count": track_count,
@@ -23,7 +24,13 @@ def home_page(request: HttpRequest) -> HttpResponse:
     return render(request, "core/home.html", context)
 
 def about_page(request: HttpRequest) -> HttpResponse:
-    ...
+    return render(request, "core/about.html")
 
 def most_sampled(request: HttpRequest) -> HttpResponse:
-    ...
+    records = (SourceRecord.objects.annotate(times_sampled=Count("tracks"))
+               .order_by("-times_sampled", "-pk"))
+
+    context = {
+        "records": records,
+    }
+    return render(request, "core/most_sampled.html", context)

@@ -26,6 +26,7 @@ class SourceRecordForm(forms.ModelForm):
             "title": forms.TextInput(attrs={"placeholder": "Record title"}),
             "original_artist": forms.TextInput(attrs={"placeholder": "Original artist"}),
             "release_year": forms.NumberInput(attrs={"placeholder": "1999", "min": 1900, "max": datetime.now().year}),
+            "release_date": forms.DateInput(attrs={"type": "date"}, format="%Y-%m-%d"),
         }
         labels = {
             "release_year": "Release Year",
