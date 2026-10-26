@@ -1,0 +1,45 @@
+{# Expects: tracks (iterable of Track). Optional: hide_producer, show_actions #}
+{% load duration %}
+<div class="table-wrap">
+  <table class="ledger">
+    <caption class="sr-only">Tracks</caption>
+    <thead>
+      <tr>
+        <th scope="col">Track</th>
+        {% if not hide_producer %}<th scope="col">Producer</th>{% endif %}
+        <th scope="col">Samples</th>
+        <th scope="col">Style</th>
+        <th scope="col" class="num">BPM</th>
+        <th scope="col" class="num">Length</th>
+        <th scope="col" class="num">Year</th>
+        {% if show_actions %}<th scope="col"><span class="sr-only">Actions</span></th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for track in tracks %}
+        <tr>
+          <td>
+            <a class="row-title" href="{% url 'tracks:detail' track.slug %}">{{ track.title }}</a>
+            <span class="sub">{{ track.performer }}</span>
+          </td>
+          {% if not hide_producer %}
+            <td><a href="{% url 'producers:detail' track.producer.pk %}">{{ track.producer.name }}</a></td>
+          {% endif %}
+          <td>{% include "partials/_sample_chips.html" with samples=track.samples.all %}</td>
+          <td><span class="tag">{{ track.get_style_display }}</span></td>
+          <td class="num">{{ track.bpm }}</td>
+          <td class="num">{{ track.length|duration }}</td>
+          <td class="num">{{ track.release_year }}</td>
+          {% if show_actions %}
+            <td class="actions">
+              <a href="{% url 'tracks:edit' track.slug %}">Edit</a>
+              <a class="danger" href="{% url 'tracks:delete' track.slug %}">Delete</a>
+            </td>
+          {% endif %}
+        </tr>
+      {% empty %}
+        <tr><td class="empty-cell" colspan="8">No tracks to show.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

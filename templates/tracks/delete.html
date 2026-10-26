@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load duration %}
+
+{% block title %}Delete {{ track.title }}{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Confirm deletion" title="Delete this track?" %}
+
+<div class="confirm-card">
+  <dl class="meta">
+    <div><dt>Title</dt><dd>{{ track.title }}</dd></div>
+    <div><dt>Performer</dt><dd>{{ track.performer }}</dd></div>
+    <div><dt>Producer</dt><dd>{{ track.producer.name }}</dd></div>
+    <div><dt>Length</dt><dd>{{ track.length|duration }}</dd></div>
+    <div><dt>Samples</dt><dd>{{ track.samples.count }}</dd></div>
+  </dl>
+  <p>The track and its sample links are removed. The producer and the source records stay in the catalogue. This can’t be undone.</p>
+  <form method="post" class="btn-row">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete track</button>
+    <a class="btn btn-ghost" href="{% url 'tracks:detail' track.slug %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

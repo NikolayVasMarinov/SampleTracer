@@ -1,0 +1,15 @@
+{# Expects: samples (iterable of SourceRecord). Optional: show_all (otherwise first 3 + a "+N more" chip) #}
+{% if samples %}
+<ul class="chips">
+  {% for sample in samples %}
+    {% if show_all or forloop.counter <= 3 %}
+      <li><a class="chip" href="{% url 'records:detail' sample.slug %}" title="{{ sample.title }} by {{ sample.original_artist }} ({{ sample.release_year }})">{{ sample.title|truncatechars:24 }}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if not show_all and samples|length > 3 %}
+    <li><span class="chip chip-more">+{{ samples|length|add:"-3" }} more</span></li>
+  {% endif %}
+</ul>
+{% else %}
+  <span class="muted">No samples</span>
+{% endif %}

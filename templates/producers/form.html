@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{% if producer %}Edit {{ producer.name }}{% else %}Add producer{% endif %}{% endblock %}
+
+{% block content %}
+{% if producer %}
+  {% url 'producers:detail' producer.pk as cancel_url %}
+  {% include "partials/_page_header.html" with eyebrow="Edit producer" title=producer.name %}
+  {% include "partials/_form_body.html" with submit_label="Save changes" %}
+{% else %}
+  {% url 'producers:list' as cancel_url %}
+  {% include "partials/_page_header.html" with eyebrow="New producer" title="Add a producer" subtitle="Add the producer first: every track needs one." %}
+  {% include "partials/_form_body.html" with submit_label="Add producer" %}
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{# Page-specific scripts go here (for example the region toggle). #}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="About" title="What SampleTracer does" subtitle="A small catalogue for hip hop producers who want to know where a sound came from." %}
+
+<div class="prose">
+  <h2>The idea</h2>
+  <p>Hip hop is built on other records. SampleTracer keeps that lineage in one place: who produced a track, and exactly which source records it samples. Open a track to see its samples, open a record to see every track that flipped it.</p>
+
+  <h2>The three things you track</h2>
+  <dl class="definitions">
+    <dt>Producers</dt>
+    <dd>The person behind the beat: country, active-since year and, for US producers, the region they come from.</dd>
+    <dt>Source records</dt>
+    <dd>The original songs that get sampled, with artist, release year, genre and length.</dd>
+    <dt>Tracks</dt>
+    <dd>The hip hop tracks themselves: tempo, style, key and length, linked to one producer and to any number of source records.</dd>
+  </dl>
+
+  <h2>Good to know</h2>
+  <ul>
+    <li>A track can’t sample a record that was released after the track itself.</li>
+    <li>A producer who still has tracks can’t be deleted; remove or move those tracks first.</li>
+    <li>Lengths are typed as <code>m:ss</code> (for example <code>3:45</code>) and shown the same way.</li>
+    <li>The <a href="{% url 'most_sampled' %}">Most sampled</a> page ranks source records by how many tracks use them.</li>
+  </ul>
+</div>
+{% endblock %}

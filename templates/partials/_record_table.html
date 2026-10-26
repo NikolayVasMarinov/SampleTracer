@@ -1,0 +1,34 @@
+{# Expects: records (iterable of SourceRecord). Optional: show_rank, show_count (uses record.times_sampled) #}
+{% load duration %}
+<div class="table-wrap">
+  <table class="ledger">
+    <caption class="sr-only">Source records</caption>
+    <thead>
+      <tr>
+        {% if show_rank %}<th scope="col" class="num">#</th>{% endif %}
+        <th scope="col">Record</th>
+        <th scope="col">Genre</th>
+        <th scope="col" class="num">Year</th>
+        <th scope="col" class="num">Length</th>
+        {% if show_count %}<th scope="col" class="num">Times sampled</th>{% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in records %}
+        <tr>
+          {% if show_rank %}<td class="num rank">{{ forloop.counter }}</td>{% endif %}
+          <td>
+            <a class="row-title" href="{% url 'records:detail' record.slug %}">{{ record.title }}</a>
+            <span class="sub">{{ record.original_artist }}</span>
+          </td>
+          <td><span class="tag tag-alt">{{ record.get_genre_display }}</span></td>
+          <td class="num">{{ record.release_year }}</td>
+          <td class="num">{{ record.length|duration }}</td>
+          {% if show_count %}<td class="num"><strong>{{ record.times_sampled }}</strong></td>{% endif %}
+        </tr>
+      {% empty %}
+        <tr><td class="empty-cell" colspan="6">No records to show.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

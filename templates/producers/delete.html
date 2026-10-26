@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Delete {{ producer.name }}{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Confirm deletion" title="Delete this producer?" %}
+
+{% with track_total=producer.tracks.count %}
+<div class="confirm-card">
+  <dl class="meta">
+    <div><dt>Name</dt><dd>{{ producer.name }}</dd></div>
+    <div><dt>Country</dt><dd>{{ producer.get_country_display }}{% if producer.region %} · {{ producer.get_region_display }}{% endif %}</dd></div>
+    <div><dt>Active since</dt><dd>{{ producer.active_since }}</dd></div>
+    <div><dt>Tracks</dt><dd>{{ track_total }}</dd></div>
+  </dl>
+
+  {% if track_total %}
+    <p class="form-errors">{{ producer.name }} still has {{ track_total }} track{{ track_total|pluralize }}, so this producer can’t be deleted. Delete {{ track_total|pluralize:"that track,those tracks" }} first.</p>
+    <div class="btn-row">
+      <a class="btn btn-primary" href="{% url 'producers:detail' producer.pk %}">Go to {{ producer.name }}’s tracks</a>
+      <a class="btn btn-ghost" href="{% url 'producers:list' %}">Back to producers</a>
+    </div>
+  {% else %}
+    <p>This can’t be undone.</p>
+    <form method="post" class="btn-row">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, delete producer</button>
+      <a class="btn btn-ghost" href="{% url 'producers:detail' producer.pk %}">Cancel</a>
+    </form>
+  {% endif %}
+</div>
+{% endwith %}
+{% endblock %}

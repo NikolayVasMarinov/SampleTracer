@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Tracks{% endblock %}
+
+{% block content %}
+{% url 'tracks:create' as add_url %}
+{% include "partials/_page_header.html" with eyebrow="Catalogue" title="Tracks" subtitle="Every logged track, with the records it samples." action_url=add_url action_label="Log a track" %}
+
+{% if filter_form %}
+  <form method="get" class="filter-bar" role="search" novalidate>
+    {% for field in filter_form %}
+      <div class="filter-field">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}<p class="error">{{ error }}</p>{% endfor %}
+      </div>
+    {% endfor %}
+    <div class="filter-actions">
+      <button type="submit" class="btn btn-primary">Apply</button>
+      <a class="btn btn-ghost" href="{% url 'tracks:list' %}">Reset</a>
+    </div>
+  </form>
+  {% if filter_form.non_field_errors %}
+    <div class="form-errors" role="alert">{% for error in filter_form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+  {% endif %}
+{% endif %}
+
+{% if page_obj.paginator %}
+  <p class="result-count">{{ page_obj.paginator.count }} track{{ page_obj.paginator.count|pluralize }} found</p>
+{% endif %}
+
+{% if page_obj %}
+  {% include "partials/_track_table.html" with tracks=page_obj show_actions=True %}
+  {% include "partials/_pagination.html" %}
+{% else %}
+  {% include "partials/_empty_state.html" with message="No tracks match. Try loosening the filters, or log a new track." action_url=add_url action_label="Log a track" %}
+{% endif %}
+{% endblock %}

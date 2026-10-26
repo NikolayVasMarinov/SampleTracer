@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}{{ producer.name }}{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Producer" title=producer.name %}
+
+<div class="detail-grid">
+  <dl class="meta">
+    <div><dt>Country</dt><dd>{{ producer.get_country_display }}</dd></div>
+    {% if producer.region %}<div><dt>Region</dt><dd>{{ producer.get_region_display }}</dd></div>{% endif %}
+    <div><dt>Active since</dt><dd>{{ producer.active_since }}</dd></div>
+    <div><dt>Added</dt><dd>{{ producer.created_at|date:"j M Y" }}</dd></div>
+    <div><dt>Last updated</dt><dd>{{ producer.updated_at|timesince }} ago</dd></div>
+  </dl>
+
+  <div class="prose">
+    <h2>Bio</h2>
+    {% if producer.bio %}{{ producer.bio|linebreaks }}{% else %}<p class="muted">No bio yet.</p>{% endif %}
+    <div class="btn-row">
+      <a class="btn" href="{% url 'producers:edit' producer.pk %}">Edit producer</a>
+      <a class="btn btn-danger" href="{% url 'producers:delete' producer.pk %}">Delete producer</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-head">
+    <h2>Tracks by {{ producer.name }}</h2>
+    <a href="{% url 'tracks:create' %}">Log a track →</a>
+  </div>
+  {% with tracks=producer.tracks.all %}
+    {% if tracks %}
+      {% include "partials/_track_table.html" with hide_producer=True show_actions=True %}
+    {% else %}
+      {% include "partials/_empty_state.html" with message="No tracks logged for this producer yet." %}
+    {% endif %}
+  {% endwith %}
+</section>
+{% endblock %}

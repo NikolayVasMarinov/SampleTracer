@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Source records{% endblock %}
+
+{% block content %}
+{% url 'records:create' as add_url %}
+{% include "partials/_page_header.html" with eyebrow="Catalogue" title="Source records" subtitle="The original records that tracks sample." action_url=add_url action_label="Add source record" %}
+
+{% if records %}
+  {% include "partials/_record_table.html" %}
+{% else %}
+  {% include "partials/_empty_state.html" with message="No source records yet." action_url=add_url action_label="Add the first record" %}
+{% endif %}
+{% endblock %}

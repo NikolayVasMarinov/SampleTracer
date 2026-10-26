@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Most sampled{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Leaderboard" title="Most sampled records" subtitle="Source records ranked by how many tracks sample them." %}
+
+{% if records %}
+  {% include "partials/_record_table.html" with show_rank=True show_count=True %}
+{% else %}
+  {% url 'tracks:create' as log_track_url %}
+  {% include "partials/_empty_state.html" with message="No record has been sampled yet. Log a track and tick its samples to start the ranking." action_url=log_track_url action_label="Log a track" %}
+{% endif %}
+{% endblock %}

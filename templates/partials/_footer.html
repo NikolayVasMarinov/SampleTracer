@@ -1,0 +1,12 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© {% now "Y" %} SampleTracer · trace hip hop back to its source records.</p>
+    <ul class="footer-links">
+      <li><a href="{% url 'tracks:list' %}">Tracks</a></li>
+      <li><a href="{% url 'producers:list' %}">Producers</a></li>
+      <li><a href="{% url 'records:list' %}">Source records</a></li>
+      <li><a href="{% url 'most_sampled' %}">Most sampled</a></li>
+      <li><a href="{% url 'about' %}">About</a></li>
+    </ul>
+  </div>
+</footer>

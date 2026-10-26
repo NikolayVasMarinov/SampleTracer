@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block title %}Add source record{% endblock %}
+
+{% block content %}
+{% url 'records:list' as cancel_url %}
+{% include "partials/_page_header.html" with eyebrow="New source record" title="Add a source record" subtitle="The original song a track samples." %}
+{% include "partials/_form_body.html" with submit_label="Add source record" %}
+{% endblock %}

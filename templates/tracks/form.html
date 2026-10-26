@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}{% if track %}Edit {{ track.title }}{% else %}Log a track{% endif %}{% endblock %}
+
+{% block content %}
+{% url 'producers:create' as new_producer_url %}
+{% url 'records:create' as new_record_url %}
+
+{% if track %}
+  {% url 'tracks:detail' track.slug as cancel_url %}
+  {% include "partials/_page_header.html" with eyebrow="Edit track" title=track.title %}
+{% else %}
+  {% url 'tracks:list' as cancel_url %}
+  {% include "partials/_page_header.html" with eyebrow="New track" title="Log a track" subtitle="You need at least one producer first; add source records too if the track samples any." %}
+{% endif %}
+
+<form method="post" class="form-card" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="form-errors" role="alert">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    {% if field.name == "producer" %}
+      {% if track %}
+        {% include "partials/_form_field.html" with note="The producer can’t be changed once a track is logged." %}
+      {% else %}
+        {% include "partials/_form_field.html" with hint_url=new_producer_url hint_text="Producer not listed? Add one in a new tab, then reload this page." %}
+      {% endif %}
+    {% elif field.name == "samples" %}
+      {% include "partials/_form_field.html" with hint_url=new_record_url hint_text="Record not listed? Add one in a new tab, then reload this page." %}
+    {% else %}
+      {% include "partials/_form_field.html" %}
+    {% endif %}
+  {% endfor %}
+
+  <div class="btn-row">
+    <button type="submit" class="btn btn-primary">{% if track %}Save changes{% else %}Log track{% endif %}</button>
+    <a class="btn btn-ghost" href="{{ cancel_url }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load duration %}
+
+{% block title %}{{ track.title }}{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Track" title=track.title subtitle=track.performer %}
+
+{% with samples=track.samples.all %}
+<div class="detail-grid">
+  <dl class="meta">
+    <div><dt>Producer</dt><dd><a href="{% url 'producers:detail' track.producer.pk %}">{{ track.producer.name }}</a></dd></div>
+    <div><dt>Style</dt><dd>{{ track.get_style_display }}</dd></div>
+    <div><dt>BPM</dt><dd>{{ track.bpm }}</dd></div>
+    <div><dt>Key</dt><dd>{% if track.musical_key %}{{ track.get_musical_key_display }}{% else %}<span class="muted">Unknown</span>{% endif %}</dd></div>
+    <div><dt>Length</dt><dd>{{ track.length|duration }}</dd></div>
+    <div><dt>Released</dt><dd>{% if track.release_date %}{{ track.release_date|date:"j F Y" }}{% else %}{{ track.release_year }}{% endif %}</dd></div>
+    <div><dt>Samples</dt><dd>{{ samples|length }}</dd></div>
+  </dl>
+
+  <div class="prose">
+    <h2>Sample chain</h2>
+    {% include "partials/_sample_chips.html" with show_all=True %}
+    <div class="btn-row">
+      <a class="btn" href="{% url 'tracks:edit' track.slug %}">Edit track</a>
+      <a class="btn btn-danger" href="{% url 'tracks:delete' track.slug %}">Delete track</a>
+    </div>
+  </div>
+</div>
+
+<section>
+  <div class="section-head"><h2>Source records sampled</h2></div>
+  {% if samples %}
+    {% include "partials/_record_table.html" with records=samples %}
+  {% else %}
+    {% include "partials/_empty_state.html" with message="This track has no samples logged. Use Edit to add some." %}
+  {% endif %}
+</section>
+{% endwith %}
+{% endblock %}

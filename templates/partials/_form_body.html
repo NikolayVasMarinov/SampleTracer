@@ -1,0 +1,18 @@
+{# Generic form card. Expects: form, submit_label, cancel_url #}
+<form method="post" class="form-card" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    <div class="form-errors" role="alert">
+      {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+    </div>
+  {% endif %}
+
+  {% for field in form %}
+    {% include "partials/_form_field.html" %}
+  {% endfor %}
+
+  <div class="btn-row">
+    <button type="submit" class="btn btn-primary">{{ submit_label }}</button>
+    <a class="btn btn-ghost" href="{{ cancel_url }}">Cancel</a>
+  </div>
+</form>

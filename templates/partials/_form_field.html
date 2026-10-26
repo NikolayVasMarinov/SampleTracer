@@ -1,0 +1,9 @@
+{# Expects: field. Optional: hint_url + hint_text (link under the field), note (plain text under the field) #}
+<div class="field{% if field.errors %} field-error{% endif %}{% if field.field.disabled %} field-disabled{% endif %}">
+  <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="req" aria-hidden="true"> *</span>{% endif %}</label>
+  {{ field }}
+  {% if field.help_text %}<p class="help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+  {% if note %}<p class="hint">{{ note }}</p>{% endif %}
+  {% if hint_url %}<p class="hint"><a href="{{ hint_url }}" target="_blank" rel="noopener">{{ hint_text }}</a></p>{% endif %}
+  {% for error in field.errors %}<p class="error">{{ error }}</p>{% endfor %}
+</div>

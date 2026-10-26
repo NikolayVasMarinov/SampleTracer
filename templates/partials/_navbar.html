@@ -1,0 +1,27 @@
+{% with current=request.resolver_match %}
+<header class="site-header">
+  <div class="container nav-inner">
+    <a class="brand" href="{% url 'home' %}"><span class="brand-mark" aria-hidden="true"></span>SampleTracer</a>
+
+    <nav aria-label="Main navigation">
+      <ul class="nav-links">
+        <li><a href="{% url 'home' %}"{% if current.url_name == 'home' %} aria-current="page"{% endif %}>Home</a></li>
+        <li><a href="{% url 'tracks:list' %}"{% if current.namespace == 'tracks' %} aria-current="page"{% endif %}>Tracks</a></li>
+        <li><a href="{% url 'producers:list' %}"{% if current.namespace == 'producers' %} aria-current="page"{% endif %}>Producers</a></li>
+        <li><a href="{% url 'records:list' %}"{% if current.namespace == 'records' %} aria-current="page"{% endif %}>Source records</a></li>
+        <li><a href="{% url 'most_sampled' %}"{% if current.url_name == 'most_sampled' %} aria-current="page"{% endif %}>Most sampled</a></li>
+        <li><a href="{% url 'about' %}"{% if current.url_name == 'about' %} aria-current="page"{% endif %}>About</a></li>
+      </ul>
+    </nav>
+
+    <details class="add-menu">
+      <summary>+ Add</summary>
+      <ul>
+        <li><a href="{% url 'tracks:create' %}">Track</a></li>
+        <li><a href="{% url 'producers:create' %}">Producer</a></li>
+        <li><a href="{% url 'records:create' %}">Source record</a></li>
+      </ul>
+    </details>
+  </div>
+</header>
+{% endwith %}

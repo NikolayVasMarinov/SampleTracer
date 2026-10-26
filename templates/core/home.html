@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">Hip hop sample tracing</p>
+  <h1>Trace every track back to the record it flipped.</h1>
+  <p class="lead">Log producers, the tracks they made and the source records those tracks sample, then follow the chain in either direction.</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="{% url 'tracks:create' %}">Log a track</a>
+    <a class="btn" href="{% url 'tracks:list' %}">Browse tracks</a>
+    <a class="btn btn-ghost" href="{% url 'most_sampled' %}">Most sampled records</a>
+  </div>
+</section>
+
+<section class="stats" aria-label="Catalogue size">
+  <a class="stat" href="{% url 'tracks:list' %}"><strong>{{ track_count }}</strong><span>track{{ track_count|pluralize }}</span></a>
+  <a class="stat" href="{% url 'producers:list' %}"><strong>{{ producer_count }}</strong><span>producer{{ producer_count|pluralize }}</span></a>
+  <a class="stat" href="{% url 'records:list' %}"><strong>{{ record_count }}</strong><span>source record{{ record_count|pluralize }}</span></a>
+</section>
+
+<section>
+  <div class="section-head">
+    <h2>Latest tracks</h2>
+    <a href="{% url 'tracks:list' %}">All tracks →</a>
+  </div>
+  {% if latest_tracks %}
+    {% include "partials/_track_table.html" with tracks=latest_tracks %}
+  {% else %}
+    {% url 'producers:create' as first_step_url %}
+    {% include "partials/_empty_state.html" with message="Nothing logged yet. Start by adding a producer, then the records they sampled, then the track." action_url=first_step_url action_label="Add the first producer" %}
+  {% endif %}
+</section>
+
+<section>
+  <div class="section-head"><h2>How it works</h2></div>
+  <ol class="steps">
+    <li>
+      <h3>1. Add a producer</h3>
+      <p>Every track belongs to exactly one producer.</p>
+      <a href="{% url 'producers:create' %}">Add producer →</a>
+    </li>
+    <li>
+      <h3>2. Add source records</h3>
+      <p>The songs that got sampled: artist, year, genre and length.</p>
+      <a href="{% url 'records:create' %}">Add source record →</a>
+    </li>
+    <li>
+      <h3>3. Log the track</h3>
+      <p>Pick its producer and tick every record it samples.</p>
+      <a href="{% url 'tracks:create' %}">Log track →</a>
+    </li>
+  </ol>
+</section>
+{% endblock %}

@@ -1,0 +1,16 @@
+{# Expects: producer #}
+{% with track_total=producer.tracks.count %}
+<article class="card">
+  <h2 class="card-title"><a href="{% url 'producers:detail' producer.pk %}">{{ producer.name }}</a></h2>
+  <p class="card-meta">
+    {{ producer.get_country_display }}{% if producer.region %} · <span class="tag">{{ producer.get_region_display }}</span>{% endif %}
+  </p>
+  <p class="card-meta">Active since {{ producer.active_since }} · {{ track_total }} track{{ track_total|pluralize }}</p>
+  {% if producer.bio %}<p class="card-text">{{ producer.bio|truncatechars:110 }}</p>{% endif %}
+  <p class="card-actions">
+    <a href="{% url 'producers:detail' producer.pk %}">View</a>
+    <a href="{% url 'producers:edit' producer.pk %}">Edit</a>
+    <a class="danger" href="{% url 'producers:delete' producer.pk %}">Delete</a>
+  </p>
+</article>
+{% endwith %}

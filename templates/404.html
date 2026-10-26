@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Page not found{% endblock %}
+
+{% block content %}
+<section class="not-found">
+  <p class="eyebrow">Error 404</p>
+  <h1>This sample isn’t in the crate.</h1>
+  <p class="lead">The page you’re looking for doesn’t exist, or the track, producer or record behind it has been removed.</p>
+  <div class="btn-row">
+    <a class="btn btn-primary" href="{% url 'home' %}">Back to home</a>
+    <a class="btn" href="{% url 'tracks:list' %}">Browse tracks</a>
+    <a class="btn" href="{% url 'most_sampled' %}">Most sampled records</a>
+  </div>
+</section>
+{% endblock %}

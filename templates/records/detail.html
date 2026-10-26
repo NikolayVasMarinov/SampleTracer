@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load duration %}
+
+{% block title %}{{ record.title }}{% endblock %}
+
+{% block content %}
+{% include "partials/_page_header.html" with eyebrow="Source record" title=record.title subtitle=record.original_artist %}
+
+{% with sampled_in=record.tracks.all %}
+<dl class="meta">
+  <div><dt>Genre</dt><dd>{{ record.get_genre_display }}</dd></div>
+  <div><dt>Released</dt><dd>{% if record.release_date %}{{ record.release_date|date:"j F Y" }}{% else %}{{ record.release_year }}{% endif %}</dd></div>
+  <div><dt>Length</dt><dd>{{ record.length|duration }}</dd></div>
+  <div><dt>Sampled in</dt><dd>{{ sampled_in|length }} track{{ sampled_in|length|pluralize }}</dd></div>
+  <div><dt>Added</dt><dd>{{ record.created_at|date:"j M Y" }}</dd></div>
+</dl>
+
+<section>
+  <div class="section-head">
+    <h2>Tracks that sample this record</h2>
+    <a href="{% url 'tracks:create' %}">Log a track →</a>
+  </div>
+  {% if sampled_in %}
+    {% include "partials/_track_table.html" with tracks=sampled_in %}
+  {% else %}
+    {% include "partials/_empty_state.html" with message="No track samples this record yet." %}
+  {% endif %}
+</section>
+{% endwith %}
+{% endblock %}

@@ -12,6 +12,7 @@ class ProducerForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Producer name"}),
             "bio": forms.Textarea(attrs={"rows": 4}),
             "active_since": forms.NumberInput(attrs={"placeholder": "1999", "min": 1900, "max": datetime.now().year}),
+            "release_date": forms.DateField(),
         }
         labels = {
             "name": "Producer's Name",
@@ -46,7 +47,7 @@ class ProducerForm(forms.ModelForm):
         if region and country != Producer.CountryChoices.USA:
             self.add_error("region", "Region is only available if country is set to USA")
 
-        if not region and country == "USA":
+        if not region and country == Producer.CountryChoices.USA:
             self.add_error("region", "Region is required if country is set to USA")
 
         return cleaned_data

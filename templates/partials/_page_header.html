@@ -1,0 +1,9 @@
+{# Expects: title. Optional: eyebrow, subtitle, action_url + action_label #}
+<header class="page-header">
+  <div>
+    {% if eyebrow %}<p class="eyebrow">{{ eyebrow }}</p>{% endif %}
+    <h1>{{ title }}</h1>
+    {% if subtitle %}<p class="lead">{{ subtitle }}</p>{% endif %}
+  </div>
+  {% if action_url %}<a class="btn btn-primary" href="{{ action_url }}">{{ action_label }}</a>{% endif %}
+</header>
