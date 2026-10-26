@@ -1,5 +1,4 @@
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models.functions import Lower
 
@@ -50,7 +49,19 @@ class Producer(models.Model):
     def clean(self) -> None:
         super().clean()
         if self.region and self.country != self.CountryChoices.USA:
-            raise ValidationError("Region can only be set for USA producers")
+            raise ValidationError({
+                "region": (
+                    "A region can only be selected for producers "
+                    "from the USA."
+                ),
+            })
+
+        if self.country == self.CountryChoices.USA and not self.region:
+            raise ValidationError({
+                "region": (
+                    "Choose region for producers from the USA."
+                ),
+            })
 
     def __str__(self) -> str:
         return self.name

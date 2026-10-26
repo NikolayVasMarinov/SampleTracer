@@ -12,7 +12,6 @@ class ProducerForm(forms.ModelForm):
             "name": forms.TextInput(attrs={"placeholder": "Producer name"}),
             "bio": forms.Textarea(attrs={"rows": 4}),
             "active_since": forms.NumberInput(attrs={"placeholder": "1999", "min": 1900, "max": datetime.now().year}),
-            "release_date": forms.DateField(),
         }
         labels = {
             "name": "Producer's Name",

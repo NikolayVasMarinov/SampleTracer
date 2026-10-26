@@ -1,3 +1,4 @@
+from django.db.models import ProtectedError
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from producers.forms import ProducerForm
@@ -57,7 +58,16 @@ def delete_producer(request: HttpRequest, pk: int) -> HttpResponse:
     producer = get_object_or_404(Producer, pk=pk)
 
     if request.method == "POST":
-        producer.delete()
+        try:
+            producer.delete()
+        except ProtectedError:
+            messages.error(
+                request,
+                "This producer still has tracks and cannot be deleted. "
+                "Delete those tracks first.",
+            )
+            return redirect("producers:delete", pk=pk)
+
         messages.success(request, "Producer deleted successfully")
         return redirect("producers:list")
 

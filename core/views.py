@@ -27,7 +27,9 @@ def about_page(request: HttpRequest) -> HttpResponse:
     return render(request, "core/about.html")
 
 def most_sampled(request: HttpRequest) -> HttpResponse:
-    records = (SourceRecord.objects.annotate(times_sampled=Count("tracks"))
+    records = (SourceRecord.objects
+               .annotate(times_sampled=Count("tracks"))
+               .filter(times_sampled__gt=0)
                .order_by("-times_sampled", "-pk"))
 
     context = {
