@@ -143,7 +143,7 @@ class Track(models.Model):
                 violation_error_message="A track with this title and performer already exists.",
             ),
         ]
-        ordering = ["release_year", "title", "pk"]
+        ordering = ["-release_year", "title", "pk"]
 
     def __str__(self) -> str:
         return f"{self.title} by {self.performer}"
