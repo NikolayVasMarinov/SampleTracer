@@ -83,6 +83,19 @@ class TrackForm(forms.ModelForm):
         release_year = cleaned_data.get("release_year")
         release_date = cleaned_data.get("release_date")
         samples = cleaned_data.get("samples")
+        producer = cleaned_data.get("producer")
+
+        if (
+            producer
+            and release_year is not None
+            and producer.active_since is not None
+            and producer.active_since > release_year
+        ):
+            self.add_error(
+                "release_year",
+                f"{producer.name} became active in {producer.active_since}, "
+                f"so the track cannot have been released before that year.",
+            )
 
         problem_samples = []
 

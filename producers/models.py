@@ -1,5 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import Min
 from django.db.models.functions import Lower
 
 from core.validators import validate_year
@@ -62,6 +63,23 @@ class Producer(models.Model):
                     "Choose region for producers from the USA."
                 ),
             })
+
+        if self.pk is not None:
+            earliest_track_year = self.tracks.aggregate(
+                min_release_year=Min("release_year")
+            )["min_release_year"]
+
+            if (
+                self.active_since is not None
+                and earliest_track_year is not None
+                and self.active_since > earliest_track_year
+            ):
+                raise ValidationError({
+                    "active_since": (
+                        f"Cannot be later than this producer's earliest "
+                        f"track release year ({earliest_track_year})."
+                    ),
+                })
 
     def __str__(self) -> str:
         return self.name
