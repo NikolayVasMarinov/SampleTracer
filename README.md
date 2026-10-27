@@ -275,6 +275,7 @@ Forms run Django model validation before saving, while database constraints enfo
 - **Length** is typed as `m:ss` (for example `3:45`), validated for format and range (longer than 0 seconds, at most 20 minutes), stored as seconds and displayed as `m:ss` through the `duration` filter.
 - **Producer region** can only be set when the country is USA, and is required for USA producers.
 - **A track cannot sample a record released after the track** (checked by year, then by full date when both exist). The error is shown on the samples field.
+- **A track can’t be released before its producer’s active-since year**, and a producer’s active-since year can’t be later than their earliest track
 - **Duplicates** are rejected ignoring case: producer names, records by title and original artist, tracks by title and performer. Slugs are unique too; if different title/artist pairs normalize to the same slug, the form reports a URL collision instead of letting the database raise an unhandled integrity error.
 - **A producer with tracks cannot be deleted** (`PROTECT`); the confirmation page explains it and hides the delete button, and the view also handles a direct/racing POST safely.
 - **The producer of an existing track cannot be changed**: the field is disabled on the edit form.
