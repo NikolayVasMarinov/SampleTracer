@@ -37,16 +37,3 @@ class ProducerForm(forms.ModelForm):
                 "required": "Year is required",
             }
         }
-
-    def clean(self):
-        cleaned_data = super().clean()
-        country = cleaned_data.get("country")
-        region = cleaned_data.get("region")
-
-        if region and country != Producer.CountryChoices.USA:
-            self.add_error("region", "Region is only available if country is set to USA")
-
-        if not region and country == Producer.CountryChoices.USA:
-            self.add_error("region", "Region is required if country is set to USA")
-
-        return cleaned_data

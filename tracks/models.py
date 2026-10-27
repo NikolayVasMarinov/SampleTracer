@@ -136,6 +136,11 @@ class Track(models.Model):
 
         candidate_slug = slugify(f"{self.title}-{self.performer}")
 
+        if candidate_slug == "":
+            raise ValidationError({
+                "title": "Please use at least one Latin letter or digit.",
+            })
+
         if candidate_slug:
             duplicates = Track.objects.filter(slug=candidate_slug)
 
